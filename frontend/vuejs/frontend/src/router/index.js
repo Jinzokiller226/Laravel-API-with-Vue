@@ -3,6 +3,8 @@ import error401 from '@/views/errror401.vue'
 import Register from '@/views/auth/Register.vue'
 import Login from '@/views/auth/Login.vue'
 import Dashboard from '@/views/auth/Dashboard.vue'
+import Roles from '@/views/auth/Roles.vue'
+import Analytics from '@/views/auth/Analytics.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,6 +27,19 @@ const router = createRouter({
       path: '/dashboard',
       name: 'Dashboard',
       component: Dashboard,
+      children : [
+        {
+          path:'',
+          name:'analytics',
+          component: Analytics
+        },
+        {
+
+          path:'roles',
+          name:'Roles',
+          component: Roles
+        }
+      ]
     },
       {
       path: '/error401',

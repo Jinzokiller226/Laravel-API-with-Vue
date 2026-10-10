@@ -28,9 +28,7 @@ function activeTabFunc(value){
 <div class="  bg-gradient-to-b from-white via-blue-500 to-blue-600">
    <main class="">
   <div class="mb-6">
-        <Transition name="fade" mode="in-out">
-        <RouterView/>
-        </Transition>
+      <RouterView />    
   </div>
 </main>
 </div>
@@ -38,16 +36,6 @@ function activeTabFunc(value){
 </body>
  
 </template>
-<style>
-.fade-enter-from,.fade-leave-to{
-  transition: opacity 0.2 ease-in-out;
-    opacity: 0;
 
-}
-.fade-enter-active,.fade-leave-active{
-    transition: opacity 0.5s ease-out ;
-}
-
-</style>
 
 
