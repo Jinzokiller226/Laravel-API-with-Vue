@@ -6,6 +6,8 @@ import Dashboard from '@/views/auth/Dashboard.vue'
 import Roles from '@/views/auth/appmanage/Roles.vue'
 import Analytics from '@/views/auth/Analytics.vue'
 import Users from '@/views/auth/appmanage/Users.vue'
+import Doctors from '@/views/auth/appmanage/Doctors.vue'
+import PatientList from '@/views/auth/patientmanage/PatientList.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,12 +36,25 @@ const router = createRouter({
           name:'analytics',
           component: Analytics
         },
+         {
+
+          path:'patientlist',
+          name:'patientList',
+          component: PatientList
+        },
         {
 
           path:'roles',
           name:'Roles',
           component: Roles
         },
+        {
+
+          path:'doctors',
+          name:'Doctors',
+          component: Doctors
+        },
+        
         {
 
           path:'users',

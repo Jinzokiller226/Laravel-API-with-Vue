@@ -24,8 +24,8 @@ function activeTabFunc(value){
 
   
 
-<body class="min-h-screen w-full m-0 flex flex-col bg-slate-50 text-slate-900 bg-gradient-to-r from-white via-blue-500 to-blue-600">
-<div class="  bg-gradient-to-b from-white via-blue-500 to-blue-600">
+<body class="min-h-screen w-full m-0 flex flex-col bg-slate-50 text-slate-900 bg-gradient-to-b from-white via-blue-500 to-blue-600 ">
+<div class="  ">
    <main class="">
   <div class="mb-6">
       <RouterView />    
