@@ -8,6 +8,9 @@ import Analytics from '@/views/auth/Analytics.vue'
 import Users from '@/views/auth/appmanage/Users.vue'
 import Doctors from '@/views/auth/appmanage/Doctors.vue'
 import PatientList from '@/views/auth/patientmanage/PatientList.vue'
+import Category from '@/views/auth/appmanage/Category.vue'
+import Branch from '@/views/auth/appmanage/Branch.vue'
+import ScheduleBoard from '@/views/auth/scheduling/scheduleboard.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,6 +45,12 @@ const router = createRouter({
           name:'patientList',
           component: PatientList
         },
+          {
+
+          path:'scheduleboard',
+          name:'ScheduleBoard',
+          component: ScheduleBoard
+        },
         {
 
           path:'roles',
@@ -53,6 +62,18 @@ const router = createRouter({
           path:'doctors',
           name:'Doctors',
           component: Doctors
+        },
+         {
+
+          path:'category',
+          name:'Category',
+          component: Category
+        },
+         {
+
+          path:'branch',
+          name:'Branch',
+          component: Branch
         },
         
         {

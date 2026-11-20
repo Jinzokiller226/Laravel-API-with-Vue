@@ -16,7 +16,7 @@ const user = inject('currentUser', ref({ name: '', email: '' }));
         <h1 class="mx-2 font-bold">Welcome, {{ user.name }} </h1> 
         <!-- Get Users Name and Email from dashboard or cookies -->
       <div class="flex content-center justify-center p-6">
-        <div class="w-20 flex-1  border-black-200 rounded-xl h-20 p-6 mx-4 bg-slate-200 ">Data 1</div>
+        <div class="w-20 flex-1  border-black-200 rounded-xl h-20 p-6 mx-4 bg-slate-200 "><h1>Data 1</h1></div>
         <div class="w-20 flex-1 border-black-200 rounded-xl h-20 p-6 mx-4  bg-slate-200  ">Data 2</div>
         <div class="w-20 flex-1 border-black-200 rounded-xl h-20 p-6 mx-4 bg-slate-200  ">Data 3</div>
       </div>

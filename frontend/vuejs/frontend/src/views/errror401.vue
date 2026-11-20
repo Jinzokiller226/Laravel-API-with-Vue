@@ -31,7 +31,7 @@
         </div>
 
           <div class="mt-8 text-center text-xs text-gray-400">
-        Need help? Contact <a href="mailto:support@example.com" class="text-indigo-500 hover:underline">support team</a>.
+        Need help? Contact <a href="mailto:brightsightopticalclinic@gmail.com" class="text-indigo-500 hover:underline">support team</a>.
     </div>
 
     </div>
