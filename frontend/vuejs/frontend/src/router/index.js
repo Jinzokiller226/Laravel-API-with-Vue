@@ -3,8 +3,9 @@ import error401 from '@/views/errror401.vue'
 import Register from '@/views/auth/Register.vue'
 import Login from '@/views/auth/Login.vue'
 import Dashboard from '@/views/auth/Dashboard.vue'
-import Roles from '@/views/auth/Roles.vue'
+import Roles from '@/views/auth/appmanage/Roles.vue'
 import Analytics from '@/views/auth/Analytics.vue'
+import Users from '@/views/auth/appmanage/Users.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,12 @@ const router = createRouter({
           path:'roles',
           name:'Roles',
           component: Roles
+        },
+        {
+
+          path:'users',
+          name:'Users',
+          component: Users
         }
       ]
     },

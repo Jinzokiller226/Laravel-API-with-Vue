@@ -70,7 +70,10 @@ const login = async (payload: LoginForm, node?: FormKitNode) => {
              <h1 class="w-full text-xl font-bold text-heading grid content-center justify-center p-2 ">Login</h1>
             <FormKit  type="form" submit-label="Login" @submit="login">
                 <FormKit  type="email" label="Email" name="email" />
-                <FormKit type="password" label="Password" name="password" prefix-icon="password"  suffix-icon="eyeClosed" @suffix-icon-click="handleIconClick" />
+                <FormKit type="password" label="Password" name="password"  
+                 inner-class=" !border-neutral-400 focus-within:!border-blue-500 focus-within:!ring-1 focus-within:!ring-blue-500"
+                    input-class="!border-0 !ring-0 !shadow-none !outline-none focus:!border-0 focus:!ring-0 focus:!outline-none"
+                suffix-icon="eyeClosed" @suffix-icon-click="handleIconClick" />
                 
 
             </FormKit>
