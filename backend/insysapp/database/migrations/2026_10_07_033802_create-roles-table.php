@@ -16,8 +16,10 @@ return new class extends Migration
             $table->id();
             $table->string('role_name')->unique();
             $table->string('role_description');
+             $table->boolean('is_admin')->default(false);
+              $table->boolean('is_employee')->default(false);
             $table->string('role_data');
-            $table->int('created_by');
+            $table->integer('created_by');
             
             $table->rememberToken();
             $table->timestamps();

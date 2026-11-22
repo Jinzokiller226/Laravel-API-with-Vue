@@ -1,3 +1,35 @@
+<script setup lang="ts">
+import axiosInstance from '@/lib/axios';
+import { AxiosError } from 'axios';
+import {  ref,onMounted } from 'vue';
+
+
+interface User {
+  id: number
+  name: string
+  email: string
+  
+}
+
+const users = ref<User[]>([])
+const loading = ref<boolean>(true)
+const error = ref<string | null>(null)
+
+const fetchUsers = async () => {
+  try {
+    const response = await axiosInstance.get<User[]>('/users')
+    users.value = response.data
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : 'Failed to parse JSON'
+  } finally {
+    loading.value = false
+  }
+}
+onMounted(() => {
+  fetchUsers()
+})
+</script>
+
 <template>
     
       <div class="pt-8 min-h-screen border-2 border-default border-dashed rounded-base">
@@ -15,33 +47,12 @@
         </div>
 
       <div class="flex content-center justify-center p-10">
-          
-                     <div class="relative w-full overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default">
+          <p v-if="loading">Loading data...</p>
+         <p v-else-if="error" style="color: red;">{{ error }}</p>
+
+                     <div v-else class="relative w-full overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default">
                         <div class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 p-4">
-                            <!-- Dropdown menu -->
-                            <!-- <div>
-                            <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="inline-flex items-center justify-center text-body bg-neutral-secondary-medium box-border border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary shadow-xs font-medium leading-5 rounded-base text-sm px-3 py-2 focus:outline-none" type="button">
-                                Action
-                                <svg class="w-4 h-4 ms-1.5 -me-0.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/></svg>
-                            </button>
-                        
-                            <div id="dropdown" class="z-10 hidden bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-32">
-                                <ul class="p-2 text-sm text-body font-medium" aria-labelledby="dropdownDefaultButton">
-                                <li>
-                                    <a href="#" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Reward</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Promote</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">Archive</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="inline-flex items-center w-full p-2 text-fg-danger hover:bg-neutral-tertiary-medium rounded">Delete</a>
-                                </li>
-                                </ul>
-                            </div>
-                            </div> -->
+                            
                             <label for="input-group-1" class="sr-only">Search</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -69,13 +80,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="bg-neutral-primary-soft border-b border-default hover:bg-neutral-secondary-medium">
+                                <tr v-for="user in users" :key="user.id" class="bg-neutral-primary-soft border-b border-default hover:bg-neutral-secondary-medium">
                                    
                                     <th scope="row" class="flex items-center px-6 py-4 text-heading whitespace-nowrap">
                                         <img class="w-10 h-10 rounded-full" src="" alt="Jese image">
                                         <div class="ps-3">
-                                            <div class="text-base font-semibold">Neil Sims</div>
-                                            <div class="font-normal text-body">neil.sims@flowbite.com</div>
+                                            <div class="text-base font-semibold">{{user.name}}</div>
+                                            <div class="font-normal text-body">{{user.email}}</div>
                                         </div>  
                                     </th>
                                     <td class="px-6 py-4">
