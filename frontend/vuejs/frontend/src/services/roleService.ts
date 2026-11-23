@@ -2,9 +2,12 @@ import api from './api';
 import type {ApiResponse, PaginatedResponse, Roles, RolesPayload} from '../types/roles';
 
 export const rolesService ={
-    async getAll(page = 1): Promise<PaginatedResponse<Roles>> {
+    async getAll(page = 1, search =''): Promise<PaginatedResponse<Roles>> {
         const response = await api.get<PaginatedResponse<Roles>>(`/roles`, {
-            params: { page },
+            params: { page,
+                ...(search ? {search} : {}),
+
+             },
         });
         return response.data;
     },
@@ -20,6 +23,7 @@ export const rolesService ={
     },
 
     async update(id: number, payload: RolesPayload): Promise<ApiResponse<Roles>> {
+        // console.log('Updating role with ID:', id, 'and payload:', payload);
         const response = await api.put<ApiResponse<Roles>>(`/roles/${id}`, payload);    
         return response.data;
     },

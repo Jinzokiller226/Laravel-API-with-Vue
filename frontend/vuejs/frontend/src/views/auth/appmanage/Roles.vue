@@ -2,7 +2,7 @@
 import axiosInstance from '@/lib/axios';
 import { computed } from '@vue/reactivity';
 import { isAxiosError } from 'axios';
-import {  ref,onMounted } from 'vue';
+import {  ref,onMounted,watch } from 'vue';
 import { rolesService } from '@/services/roleService';
 import type { Roles, RolesPayload } from '@/types/roles';
 
@@ -25,23 +25,81 @@ const statusOptions = [
   { value: 'active', label: 'Active' },
   { value: 'inactive', label: 'Inactive' },
 ]
+// States
+const searchQuery = ref('');
+const searching = ref(false);
 
-const roles = ref<Role[]>([])
-const loading = ref<boolean>(true)
-const error = ref<string | null>(null)
+const roles = ref<Role[]>([]);
+const loading = ref<boolean>(true);
+const error = ref<string | null>(null);
 const showModal = ref(false);
+const modalfunction = ref<string | null>(null);
+const editingID = ref<number | null>(null);
+// 
+
 function openAddRolesModal() {
  
   showModal.value = true;
+  modalfunction.value = 'addRole';
+    form.value = {
+      
+          role_name: '',
+          role_description: '',
+          role_data: '',
+        };
 }
 
 // Form data for adding a new role
  const form  = ref<RolesPayload> ({
+  
   role_name: '',
   role_description: '',
   role_data: '',
  });
 
+ const editForm = ref<Roles> ({
+  
+  id:0,
+  role_name: '',
+  role_description: '',
+   role_data: '',
+ });
+
+ function openEditRolesModal(role: Role) {
+  showModal.value = true;
+  modalfunction.value = 'editRole';
+  console.log('Editing role:', role);
+  // Populate the form with the selected role's data
+  editingID.value = role.id;
+  editForm.value.id = editingID.value;
+  editForm.value.role_name = role.role_name;
+  editForm.value.role_description = role.role_description;
+ editForm.value.role_data = role.role_data;
+ }
+
+ // Handle Edit Submission of Role
+    const handleEdit = async () => {
+      if (editingID.value === null) {
+        return;
+      }
+
+      try {
+        console.log('Form data:', editForm.value);
+        await rolesService.update(editingID.value, editForm.value);
+        // Reset the form after successful submission
+        form.value = {
+           
+          role_name: '',
+          role_description: '',
+          role_data: '',
+        };
+        closeModal();
+        fetchRoles(); // Refresh the roles list after editing a role
+      } catch (error) {
+        console.error('Error updating role:', error);
+      }
+    };
+  //
 
  // Handle Submission of Role
     const handleCreate = async () => {
@@ -50,6 +108,7 @@ function openAddRolesModal() {
         await rolesService.create(form.value);
         // Reset the form after successful submission
         form.value = {
+           
           role_name: '',
           role_description: '',
           role_data: '',
@@ -62,20 +121,16 @@ function openAddRolesModal() {
     };
  //
 
+
+
 function closeModal() {
   showModal.value = false;
+  modalfunction.value = null;
 }
 const fetchRoles = async () => {
-  // try {
-  //   const response = await axiosInstance.get<Role[]>('/roles')
-  //   roles.value = response.data
-  // } catch (err) {
-  //   error.value = err instanceof Error ? err.message : 'Failed to parse JSON'
-  // } finally {``
-  //   loading.value = false
-  // }
+  searching.value = true
   try {
-    const response = await rolesService.getAll();
+    const response = await rolesService.getAll(1, searchQuery.value.trim());
     roles.value = response.data.map((role: Roles) => ({
       ...role,
       role_name: role.role_name,
@@ -84,12 +139,21 @@ const fetchRoles = async () => {
       is_employee: false,
       created_by: 0,
     }));
+    error.value = null;
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'Failed to fetch roles';
   } finally {
     loading.value = false;
+     searching.value = false
   }
 }
+
+let timer: ReturnType<typeof setTimeout> | null = null 
+
+watch(searchQuery, () => {
+  if (timer) clearTimeout(timer)
+  timer = setTimeout(fetchRoles,400)
+})
 
 onMounted(() => {
   fetchRoles()
@@ -188,7 +252,7 @@ onMounted(() => {
                                 <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                     <svg class="w-4 h-4 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg>
                                 </div>
-                                <input type="text" id="input-group-1" class="block w-full max-w-96 ps-9 pe-3 py-2 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body" placeholder="Search">
+                                <input type="text" v-model="searchQuery" id="input-group-1" class="block w-full max-w-96 ps-9 pe-3 py-2 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body" placeholder="Search">
                             </div>
                         </div>
                         <table class="w-full text-sm text-left rtl:text-right text-body">
@@ -230,7 +294,7 @@ onMounted(() => {
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <a href="#"  class="font-medium text-fg-brand hover:underline">Edit role</a>
+                                        <a @click="openEditRolesModal(role)"  class="font-medium text-fg-brand hover:underline">Edit role</a>
                                     </td>
                                 </tr>
                                 
@@ -246,7 +310,7 @@ onMounted(() => {
   
   <Teleport to="body">
       <div
-        v-if="showModal"
+        v-if="showModal && modalfunction === 'addRole'"
         class="fixed inset-0 z-50 flex items-center justify-center">
 
         <!-- Backdrop -->
@@ -318,66 +382,151 @@ onMounted(() => {
                     class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
                     Save Role
                   </button>
+              </div>
             </div>
-            </div>
-         
-            <!-- Time Dropdown -->
-            <!-- <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Time</label>
-              <select
-                v-model="scheduleForm.time"
-                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                <option value="" disabled>Select time</option>
-                <option v-for="slot in timeSlots" :key="slot" :value="slot">
-                  {{ slot }}
-                </option>
-              </select>
-            </div> -->
-
-            <!-- Doctor Dropdown -->
-            <!-- <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Doctor</label>
-              <select
-                v-model="scheduleForm.doctor"
-                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                <option value="" disabled>Select doctor</option>
-                <option v-for="doc in doctors" :key="doc.id" :value="doc.name">
-                  {{ doc.name }}
-                </option>
-              </select>
-            </div> -->
-
-            <!-- Branch Dropdown -->
-            <!-- <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Branch</label>
-              <select
-                v-model="scheduleForm.branch"
-                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                <option value="" disabled>Select branch</option>
-                <option v-for="b in branches" :key="b.id" :value="b.name">
-                  {{ b.name }}
-                </option>
-              </select>
-            </div>
-
-          </div> -->
-
-          <!-- Modal Footer -->
-          <!-- <div class="flex justify-end gap-3 mt-6">
-            <button
-              @click="closeModal"
-              class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
-              Cancel
-            </button>
-            <button
-              @click="submitSchedule"
-              :disabled="!isFormValid"
-              class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
-              Save Schedule
-            </button> -->
           </div> 
 
         </div>
       </div>
+      <div  v-else-if="showModal && modalfunction === 'editRole'"
+        class="fixed inset-0 z-50 flex items-center justify-center">
+        >
+                <div
+                class="fixed inset-0 bg-black/50 transition-opacity"
+                @click="closeModal">
+              </div>
+
+
+              <!-- Modal Content -->
+              <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 z-10">
+
+                  <!-- Modal Header -->
+                  <div class="flex items-center justify-between mb-5">
+                    <div>
+                      <h3 class="text-lg font-bold text-gray-900">Edit Role </h3>
+                  
+                    </div>
+                    <button
+                      @click="closeModal"
+                      class="text-gray-400 hover:text-gray-600 rounded-lg p-1.5 hover:bg-gray-100">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <!-- Form -->
+                  
+                  <div class="space-y-4">
+
+                    <!-- Date (read-only) -->
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Role Name</label>
+                      <input
+                      v-model="editForm.role_name"
+                        type="text"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50 text-gray-600 text-sm" />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Role Description</label>
+                      <input
+                      v-model="editForm.role_description"
+                        type="text"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50 text-gray-600 text-sm" />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Role Status</label>
+                      <select
+                        v-model="editForm.role_data"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="" disabled>Select Status</option>
+                        <option v-for="slot in statusOptions" :key="slot.value" :value="slot.value">
+                          {{ slot.label }}
+
+                        </option>
+                        
+                      
+                      </select>
+
+                      <div class="flex justify-end gap-3 mt-6">
+                          <button
+                            @click="closeModal"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                            Cancel
+                          </button>
+                          <button
+                            @click="handleEdit"
+                            :disabled="!isFormValid"
+                            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                            Save Role
+                          </button>
+                      </div>
+                    </div>
+                <!-- Edit Role Modal -->
+                    
+
+
+
+
+                <!-- Edit Role Modal  -->
+                    <!-- Time Dropdown -->
+                    <!-- <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                      <select
+                        v-model="scheduleForm.time"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="" disabled>Select time</option>
+                        <option v-for="slot in timeSlots" :key="slot" :value="slot">
+                          {{ slot }}
+                        </option>
+                      </select>
+                    </div> -->
+
+                    <!-- Doctor Dropdown -->
+                    <!-- <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Doctor</label>
+                      <select
+                        v-model="scheduleForm.doctor"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="" disabled>Select doctor</option>
+                        <option v-for="doc in doctors" :key="doc.id" :value="doc.name">
+                          {{ doc.name }}
+                        </option>
+                      </select>
+                    </div> -->
+
+                    <!-- Branch Dropdown -->
+                    <!-- <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Branch</label>
+                      <select
+                        v-model="scheduleForm.branch"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="" disabled>Select branch</option>
+                        <option v-for="b in branches" :key="b.id" :value="b.name">
+                          {{ b.name }}
+                        </option>
+                      </select>
+                    </div>
+
+                  </div> -->
+
+                  <!-- Modal Footer -->
+                  <!-- <div class="flex justify-end gap-3 mt-6">
+                    <button
+                      @click="closeModal"
+                      class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                      Cancel
+                    </button>
+                    <button
+                      @click="submitSchedule"
+                      :disabled="!isFormValid"
+                      class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                      Save Schedule
+                    </button> -->
+                  </div> 
+
+                </div>
+        </div>
+
     </Teleport>
 </template>

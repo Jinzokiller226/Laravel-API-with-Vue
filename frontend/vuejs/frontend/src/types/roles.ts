@@ -6,6 +6,7 @@ export interface Roles{
 }
 
 export interface RolesPayload{
+   
     role_name: string;
     role_description: string;
     role_data: string;

@@ -22,8 +22,10 @@ Route::get('/users',function (Request $request) {
 
 //Route Roles
     // Public 
-        Route::apiResource('roles', RoleController::class)->only(['index', 'show']);
+        Route::apiResource('roles', RoleController::class)->only(['show']);
+        Route::middleware('auth:sanctum')->get('/roles', [RoleController::class, 'index']);
     // Protected
-       
+       Route::middleware('auth:sanctum')->group(function () {
             Route::apiResource('roles', RoleController::class)->only(['store', 'update', 'destroy']);
        
+});
