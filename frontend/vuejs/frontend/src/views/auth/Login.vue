@@ -48,7 +48,7 @@ const login = async (payload: LoginForm, node?: FormKitNode) => {
     catch(e){
        if (e instanceof AxiosError && e.response?.status === 422){
             node?.setErrors([''],e.response?.data.errors)
-
+            
         }
 
     }

@@ -27,5 +27,8 @@ Route::get('/users',function (Request $request) {
     // Protected
        Route::middleware('auth:sanctum')->group(function () {
             Route::apiResource('roles', RoleController::class)->only(['store', 'update', 'destroy']);
-       
-});
+       });
+
+// Route Branches
+
+    

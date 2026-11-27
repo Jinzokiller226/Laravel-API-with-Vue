@@ -181,41 +181,41 @@ onMounted(() => {
 
       <div class="flex content-center justify-center p-6">
        <!-- <p v-if="loading">Loading data...</p> -->
-                <div  v-if="loading"  class="max-w-screen w-screen p-4 border border-default divide-y divide-default rounded-base shadow-xs animate-pulse md:p-6">
+                 <div  v-if="loading"  class="max-w-screen w-screen p-4 border border-black divide-y divide-black rounded-base shadow-xs animate-pulse md:p-6">
                         <div class="flex items-center justify-between pb-4">
                             <div>
-                                <div class="h-2.5 bg-neutral-quaternary rounded-full w-24 mb-2.5"></div>
-                                <div class="w-32 h-2 bg-neutral-quaternary rounded-full"></div>
+                                <div class="h-2.5 bg-black rounded-full w-24 mb-2.5"></div>
+                                <div class="w-32 h-2 bg-black rounded-full"></div>
                             </div>
-                            <div class="h-2.5 bg-default rounded-full w-12"></div>
+                            <div class="h-2.5 bg-black rounded-full w-12"></div>
                         </div>
                         <div class="flex items-center justify-between py-4">
                             <div>
-                                <div class="h-2.5 bg-neutral-quaternary rounded-full w-24 mb-2.5"></div>
-                                <div class="w-32 h-2 bg-neutral-quaternary rounded-full"></div>
+                                <div class="h-2.5 bg-black rounded-full w-24 mb-2.5"></div>
+                                <div class="w-32 h-2 bg-black rounded-full"></div>
                             </div>
-                            <div class="h-2.5 bg-default rounded-full w-12"></div>
+                            <div class="h-2.5 bg-black rounded-full w-12"></div>
                         </div>
                         <div class="flex items-center justify-between py-4">
                             <div>
-                                <div class="h-2.5 bg-neutral-quaternary rounded-full w-24 mb-2.5"></div>
-                                <div class="w-32 h-2 bg-neutral-quaternary rounded-full"></div>
+                                <div class="h-2.5 bg-black rounded-full w-24 mb-2.5"></div>
+                                <div class="w-32 h-2 bg-black rounded-full"></div>
                             </div>
-                            <div class="h-2.5 bg-default rounded-full w-12"></div>
+                            <div class="h-2.5 bg-black rounded-full w-12"></div>
                         </div>
                         <div class="flex items-center justify-between py-4">
                             <div>
-                                <div class="h-2.5 bg-neutral-quaternary rounded-full w-24 mb-2.5"></div>
-                                <div class="w-32 h-2 bg-neutral-quaternary rounded-full"></div>
+                                <div class="h-2.5 bg-black rounded-full w-24 mb-2.5"></div>
+                                <div class="w-32 h-2 bg-black rounded-full"></div>
                             </div>
-                            <div class="h-2.5 bg-default rounded-full w-12"></div>
+                            <div class="h-2.5 bg-black rounded-full w-12"></div>
                         </div>
                         <div class="flex items-center justify-between py-4">
                             <div>
-                                <div class="h-2.5 bg-neutral-quaternary rounded-full w-24 mb-2.5"></div>
-                                <div class="w-32 h-2 bg-neutral-quaternary rounded-full"></div>
+                                <div class="h-2.5 bg-black rounded-full w-24 mb-2.5"></div>
+                                <div class="w-32 h-2 bg-black rounded-full"></div>
                             </div>
-                            <div class="h-2.5 bg-default rounded-full w-12"></div>
+                            <div class="h-2.5 bg-black rounded-full w-12"></div>
                         </div>
                         <span class="sr-only">Loading...</span>
                     </div>
@@ -290,7 +290,7 @@ onMounted(() => {
                                         <div class="flex items-center">
                                             <div v-if="role.role_data === 'active'" class="h-2.5 w-2.5 rounded-full bg-success me-2"></div>
                                             <div v-else class="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>
-                                            {{ role.role_data === 'active' ? 'Online' : 'Inactive' }}
+                                            {{ role.role_data === 'active' ? 'Active' : 'Inactive' }}
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">

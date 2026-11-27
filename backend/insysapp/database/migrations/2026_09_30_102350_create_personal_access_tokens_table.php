@@ -9,6 +9,10 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+    public function shouldRun(): bool {
+        return true;
+    }
+
     public function up(): void
     {
         Schema::create('personal_access_tokens', function (Blueprint $table) {

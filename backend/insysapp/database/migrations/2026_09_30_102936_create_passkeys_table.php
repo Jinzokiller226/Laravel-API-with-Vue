@@ -10,6 +10,10 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+    public function shouldRun(): bool {
+        return true;
+    }
+
     public function up(): void
     {
         Schema::create('passkeys', function (Blueprint $table) {
